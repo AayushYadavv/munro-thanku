@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <!-- Internal CSS -->
+    <style>
+      body {
+        background-image: url("./bg.png");
+        background-size: cover;
+        background-position: center; 
+        background-repeat: no-repeat; 
+        font-family: "Courier New", Courier, monospace;
+        margin: 0;
+        height: 100vh;
+      }
+      .cwWrapper {
+        position: relative;
+        margin: auto;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 16px;
+      }
+      h1,
+      h3, .thanks {
+        color: white;
+        text-shadow: 2px 2px 3px rgb(10, 10, 10);
+        margin: 0;
+        text-align: center;
+      }
+      h3 {
+        width: 90%;
+        text-indent: 70px;
+      }
+      .thanks {
+        font-weight: 700;
+        font-size: 48px;
+      }
+      .content {
+        background-color: rgba(228, 141, 236, 0.158);
+        gap: 16px;
+        padding: 16px;
+        box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px,
+          rgba(17, 17, 26, 0.1) 0px 8px 24px,
+          rgba(17, 17, 26, 0.1) 0px 16px 56px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        backdrop-filter: blur(0.7px);
+        display: none;
+      }
+      .crossword {
+        padding: 12px;
+        border-radius: 2px;
+        box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 2px,
+          rgba(0, 0, 0, 0.07) 0px 2px 4px, rgba(0, 0, 0, 0.07) 0px 4px 8px,
+          rgba(0, 0, 0, 0.07) 0px 8px 16px, rgba(0, 0, 0, 0.07) 0px 16px 32px,
+          rgba(0, 0, 0, 0.07) 0px 32px 64px;
+      }
+      .row {
+        display: flex;
+      }
+      .column {
+        width: 20px;
+        height: 20px;
+        /* outline: 0.05px solid red; */
+        background-color: rgba(128, 128, 128, 0.24);
+        margin: 1px;
+        text-align: center;
+        color: white;
+        font-size: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 2px;
+        transition: all 0.3s ease;
+        /* box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset; */
+      }
+      .highlighted {
+        font-weight: 700;
+        background-color: rgba(87, 87, 231, 0.712);
+        animation: backgroundChange 2s ease-in; 
+      }
+      .name {
+        background-color: rgba(197, 184, 184, 0.425);
+      }
+      .overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      @keyframes backgroundChange {
+    0% {
+        background-color:rgba(197, 184, 184, 0.425);
+        font-weight: 400;
+    }
+    50% {
+        background-color: rgba(87, 87, 231, 0.712);
+
+    }
+    100% {
+        font-weight: 700;
+    }
+}
+    </style>
+  </head>
+  <body>
+    <div class="cwWrapper">
+        <div class="thanks">
+            Thanks Team!❤️
+        </div>
+      <div class="crossword">
+        <div class="overlay">
+          <div class="content">
+            <h1>A BIG THANK YOU!</h1>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Internal JavaScript -->
+    <script>
+      let HIGHLIGHTED_NAME = "Indir";
+
+      const NO_OF_ROWS = 19;
+      const NO_OF_COLUMNS = 24;
+
+      const namesData = [
+        { "2_1_c_6": "NARESH" },
+        { "1_6_d_6": "BHARAT" },
+        { "5_5_c_8": "VARUNESH" },
+        { "8_7_c_6": "LOKESH" },
+        { "9_15_c_5": "SURYA" },
+        { "7_12_c_8": "BHARATHI" },
+        { "14_15_c_5": "ALVIN" },
+        { "13_19_c_5": "ARIES" },
+        { "16_16_c_5": "INDIR" },
+        { "18_16_c_4": "JAYA" },
+        { "4_12_d_7": "SHUBHAM" },
+        { "6_15_d_9": "PRISCILLA" },
+        { "1_17_d_7": "CHUNKIT" },
+        { "2_19_d_8": "SHRUTIKA" },
+        { "13_19_d_6": "ANKITA" },
+        { "5_5_d_9": "VALUELABS" },
+        { "4_8_d_5": "MUNRO" },
+        { "2_5_c_11": "SHOENIVERSE" },
+        { "11_3_c_5": "REACT" },
+        { "10_7_d_9": "STORYBOOK" },
+        { "16_6_c_4": "NODE" },
+        { "12_22_d_6": "NEXTJS" },
+      ];
+
+      function getRandomCapitalLetter() {
+        const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        const randomIndex = Math.floor(Math.random() * alphabet.length);
+        return alphabet[randomIndex];
+      }
+      const indexConverter = (nameObj) => {
+        const key = Object.keys(nameObj)[0];
+        const name = Object.values(nameObj)[0];
+
+        const keyValues = key.split("_");
+        let result = {};
+        for (let i = 0; i < parseInt(keyValues[3]); i++) {
+          if (keyValues[2] === "c") {
+            result[`${keyValues[0]}_${parseInt(keyValues[1]) + i}`] = name[i];
+          }
+          if (keyValues[2] === "d") {
+            result[`${parseInt(keyValues[0]) + i}_${keyValues[1]}`] = name[i];
+          }
+        }
+        return result;
+      };
+
+      const generateIndexs = (data) => {
+        let responseObj = {};
+        data.forEach((nameCW) => {
+          responseObj = { ...responseObj, ...indexConverter(nameCW) };
+        });
+
+        return responseObj;
+      };
+      const cwIndex = generateIndexs(namesData);
+      const render = (newName) => {
+        const highlightedIndexs = [];
+        document.querySelector(".crossword").innerHTML = ""
+
+        namesData.forEach((name) => {
+          if (Object.values(name).includes(newName.toUpperCase())) {
+            let keyValues = Object.keys(name)[0].split("_");
+            if (keyValues[2] === "c") {
+              new Array(parseInt(keyValues[3]))
+                .fill(null)
+                .forEach((_, index) => {
+                  highlightedIndexs.push(
+                    `${keyValues[0]}_${parseInt(keyValues[1]) + index}`
+                  );
+                });
+            } else {
+              new Array(parseInt(keyValues[3]))
+                .fill(null)
+                .forEach((_, index) => {
+                  highlightedIndexs.push(
+                    `${parseInt(keyValues[0]) + index}_${parseInt(
+                      keyValues[1]
+                    )}`
+                  );
+                });
+            }
+          }
+        });
+        
+
+        new Array(NO_OF_ROWS).fill(null).forEach((_, rowIndex) => {
+          let x = document.createElement("div");
+          x.className = "row";
+
+          new Array(NO_OF_COLUMNS).fill(null).forEach((_, columnIndex) => {
+            let col = document.createElement("div");
+            const letterIndex = `${rowIndex + 1}_${columnIndex + 1}`;
+            if (cwIndex[letterIndex]) {
+              col.innerHTML = cwIndex[letterIndex];
+            }
+            else {
+                col.innerHTML = getRandomCapitalLetter()
+            }
+
+            col.className = highlightedIndexs.includes(letterIndex)
+              ? "column highlighted"
+              : cwIndex[letterIndex]
+              ? "column name"
+              : "column";
+            col.setAttribute("id", letterIndex)
+            x.appendChild(col);
+          });
+
+          document.querySelector(".crossword").appendChild(x);
+        });
+      };
+
+      const randomAlphbetAdded = () => {
+        new Array(NO_OF_ROWS).fill(null).forEach((_, rowIndex) => {
+          new Array(NO_OF_COLUMNS).fill(null).forEach((_, columnIndex) => {
+            const letterIndex = `${rowIndex + 1}_${columnIndex + 1}`;
+            if (!cwIndex[letterIndex]) {
+              document.getElementById(letterIndex).innerHTML = getRandomCapitalLetter()
+            }
+
+          });
+
+
+        });
+      };
+      
+      setInterval(()=> randomAlphbetAdded(), 100)
+      for (let j = 0; j < 100000; j++) {
+        let nameArray = namesData.map((name) => Object.values(name)[0]);
+        let newName = nameArray[j % namesData.length];
+        let timerId1
+        let timerId2
+        clearInterval(timerId1)
+
+        if(j==0) {
+            render(newName)
+            randomAlphbetAdded()
+        }
+        else {
+            timerId1 = setTimeout(()=>{ render(newName)}, j * 4000)
+
+        }
+
+      }
+      
+
+    </script>
+  </body>
+</html>
